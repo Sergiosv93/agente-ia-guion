@@ -7,7 +7,7 @@ import logging
 from fastapi import FastAPI, HTTPException
 
 from app.generation import HF_MODEL_ID, LLMGenerationError, generate_json, load_model, unload_model
-from app.models import Scene, ScriptRequest, ScriptResponse
+from app.models import HookCta, Scene, ScriptRequest, ScriptResponse
 from app.prompts import build_system_prompt, build_user_prompt
 
 logging.basicConfig(level=logging.INFO)
@@ -77,14 +77,16 @@ async def generate_script(req: ScriptRequest):
 
     try:
         scenes = [Scene(**s) for s in raw["scenes"]]
-        word_count = sum(len(s.narration.split()) for s in scenes) + len(raw["hook"].split())
+        hook = HookCta(**raw["hook"])
+        cta = HookCta(**raw["cta"])
+        word_count = sum(len(s.narration.split()) for s in scenes) + len(hook.text.split()) + len(cta.text.split())
         total_seconds = sum(s.estimated_duration_seconds for s in scenes)
 
         return ScriptResponse(
             title_options=raw["title_options"],
-            hook=raw["hook"],
+            hook=hook,
             scenes=scenes,
-            cta=raw["cta"],
+            cta=cta,
             word_count=word_count,
             estimated_duration_minutes=round(total_seconds / 60, 2),
             raw_model=HF_MODEL_ID,

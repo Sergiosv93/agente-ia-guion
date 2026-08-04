@@ -2,7 +2,6 @@ WORDS_PER_MINUTE_ES = 150  # ritmo promedio de narración en español para TTS
 
 
 def build_system_prompt() -> str:
-    """Función que devuelve el system prompt del Agente"""
     return (
         "Eres un guionista experto en videos narrativos para YouTube en español, "
         "especializado en contenido 'faceless' (sin presentador en cámara). "
@@ -13,7 +12,10 @@ def build_system_prompt() -> str:
         "que cumpla EXACTAMENTE este esquema:\n"
         "{\n"
         '  "title_options": ["string", "string", "string"],\n'
-        '  "hook": "string (primeros 5-10 segundos, debe enganchar de inmediato)",\n'
+        '  "hook": {\n'
+        '    "text": "string (primeros 5-10 segundos, debe enganchar de inmediato)",\n'
+        '    "visual_description": "string (descripción visual en inglés, para un generador de imágenes)"\n'
+        "  },\n"
         '  "scenes": [\n'
         "    {\n"
         '      "scene_number": int,\n'
@@ -22,24 +24,15 @@ def build_system_prompt() -> str:
         '      "estimated_duration_seconds": int\n'
         "    }\n"
         "  ],\n"
-        '  "cta": "string (llamado a la acción final, suscribirse/comentar)"\n'
+        '  "cta": {\n'
+        '    "text": "string (llamado a la acción final, suscribirse/comentar)",\n'
+        '    "visual_description": "string (descripción visual en inglés, coherente con el cierre del video)"\n'
+        "  }\n"
         "}\n"
     )
 
 
 def build_user_prompt(niche: str, topic: str, duration_minutes: int, tone: str, extra_context: str | None) -> str:
-    """Función prompt que recibe los parametros del usuario en tipo String para el Agente, \n
-    {niche}: El nicho o tema a generar el contenido.\n
-    {topic}: La premisa central del relato. Debe ser específico: incluye un nombre.\n
-    o concepto clave, contexto geográfico/histórico o un gancho argumental.
-    {duration_minutes}:Tiempo deseado de la historia interpretado en minutos por el agente.\n
-    (No se asegura el tiempo establecido pero esta en función en una gran descripción de los parametrós de entrada).
-    {tone}: La atmósfera, ritmo y emoción que debe transmitir la voz narrativa. Ayuda a definir la intensidad y las pausas dramáticas.\n
-    {extra_context}: Instrucciones técnicas o de estilo adicionales. Puedes agregar estructura narrativa esperada, restricciones de vocabulario, 
-    recursos sensoriales o referencias estéticas.\n
-    devuelve en formato String estructurado para ser interpretado por el Agente"""
-
-
     target_words = duration_minutes * WORDS_PER_MINUTE_ES
     extra = f"\nContexto adicional: {extra_context}" if extra_context else ""
     return (

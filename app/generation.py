@@ -17,7 +17,6 @@ _model = None
 
 
 def is_loaded() -> bool:
-    """Verifica si el modelo de IA este cargado"""
     return _model is not None
 
 
@@ -77,7 +76,6 @@ class LLMGenerationError(Exception):
 
 def _extract_json(text: str) -> dict:
     # El modelo puede envolver el JSON en texto o markdown; extraemos el primer bloque {...}
-    """El modelo puede envolver el JSON en texto o markdown; extraemos el primer bloque {...}"""
     match = re.search(r"\{.*\}", text, re.DOTALL)
     if not match:
         raise LLMGenerationError(f"No se encontró un bloque JSON en la respuesta: {text[:300]}")
@@ -85,7 +83,6 @@ def _extract_json(text: str) -> dict:
 
 
 def generate_json(system_prompt: str, user_prompt: str, max_new_tokens: int = 3000) -> dict:
-    """En esta función carga el modelo en función de los prompts y devuerlve en formato json/dict el resultado del guión"""
     if _model is None or _tokenizer is None:
         raise RuntimeError("El modelo aún no ha sido cargado (load_model() no se ejecutó).")
 

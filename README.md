@@ -84,7 +84,7 @@ después de cada llamada.
 ## Opción A: correrlo en un venv local (recomendado para iterar rápido)
 
 ```powershell
-python -m venv venv
+python -m venv venv   # usa Python 3.13 (misma versión que la imagen de Docker)
 .\venv\Scripts\Activate.ps1
 
 pip install torch --index-url https://download.pytorch.org/whl/cu128
@@ -127,20 +127,11 @@ docker logs -f script-agent
 curl -X POST http://localhost:8001/generate-script \
   -H "Content-Type: application/json" \
   -d '{
-  "duration_minutes": 10,
-  "include_cta": true,
-  "language": "es",
-  "niche": "historias de misterio y terror narrado",
-  "tone": "narrativo, envolvente, con suspenso creciente",
-  "topic": "una leyenda urbana sobre una casa abandonada en un pueblo mexicano",
-  "voice": {
-    "gender": "female",
-    "language": "es",
-    "pitch_semitones": 0,
-    "speed": 1
-  }
-  "extra_context":"Estilo de narración tipo relatos de la noche o podcast de misterio."
-}'
+    "niche": "historias de misterio y terror narrado",
+    "topic": "una leyenda urbana sobre una casa abandonada en un pueblo mexicano",
+    "duration_minutes": 10,
+    "tone": "narrativo, envolvente, con suspenso creciente"
+  }'
 ```
 
 ## Health check

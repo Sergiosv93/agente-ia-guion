@@ -41,7 +41,6 @@ class ScriptRequest(BaseModel):
                 "language": "es",
                 "voice": {"gender": "female", "speed": 1.0, "pitch_semitones": 0, "language": "es"},
                 "include_cta": True,
-                "extra_context":"Estilo de narración tipo 'relatos de la noche' o podcast de misterio.",
             }
         }
     }
@@ -54,11 +53,19 @@ class Scene(BaseModel):
     estimated_duration_seconds: int
 
 
+class HookCta(BaseModel):
+    """hook y cta ahora traen su propia visual_description, igual que las escenas,
+    para que el Agente de Imágenes también pueda generarles una imagen."""
+
+    text: str
+    visual_description: str
+
+
 class ScriptResponse(BaseModel):
     title_options: list[str]
-    hook: str
+    hook: HookCta
     scenes: list[Scene]
-    cta: str
+    cta: HookCta
     word_count: int
     estimated_duration_minutes: float
     raw_model: str
